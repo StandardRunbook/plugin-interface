@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package plugin;
+
+option go_package = "github.com/StandardRunbook/plugin-interface";
+
+// The IPlugin service that represents your interface
+service Plugin {
+  // Initializes the plugin
+  rpc Init (Empty) returns (InitResponse);
+
+  // Retrieves the name of the plugin
+  rpc Name (Empty) returns (NameResponse);
+
+  // Retrieves the version of the plugin
+  rpc Version (Empty) returns (VersionResponse);
+
+  // Runs the plugin
+  rpc Run (Empty) returns (RunResponse);
+
+  // Parses the output of the plugin
+  rpc ParseOutput (Empty) returns (ParseOutputResponse);
+}
+
+// An empty message, used for methods that don't require input
+message Empty {}
+
+// Response message for Init
+message InitResponse {
+  string error_message = 1;  // error message if any
+}
+
+// Response message for Name
+message NameResponse {
+  string name = 1;  // name of the plugin
+}
+
+// Response message for Version
+message VersionResponse {
+  string version = 1;  // version of the plugin
+}
+
+// Response message for Run
+message RunResponse {
+  string error_message = 1;  // error message if any
+}
+
+// Response message for ParseOutput
+message ParseOutputResponse {
+  string output = 1;  // parsed output as string
+}
