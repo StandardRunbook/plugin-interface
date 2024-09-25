@@ -1,6 +1,6 @@
 # Paths
 PROTO_DIR=./proto
-GO_OUT_DIR=./golang/plugin-interface
+GO_OUT_DIR=./plugin-interface
 
 # Tools
 PROTOC=protoc
