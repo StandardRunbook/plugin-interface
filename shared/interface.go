@@ -2,54 +2,40 @@ package shared
 
 import (
 	"context"
-	"net/rpc"
+	_ "net/rpc"
 
 	"google.golang.org/grpc"
 
-	plugin "github.com/StandardRunbook/plugin-interface/plugin-interface/github.com/StandardRunbook/plugin-interface"
+	"github.com/StandardRunbook/plugin-interface/plugin-interface/github.com/StandardRunbook/plugin-interface"
+	"github.com/hashicorp/go-plugin"
 )
 
 // PluginMap is the map of plugins we can dispense.
-var PluginMap = map[string]plugin.PluginClient{
-	"kv_grpc": &KVGRPCPlugin{},
-	"kv":      &KVPlugin{},
+var PluginMap = map[string]plugin.Plugin{
+	"plugin_grpc": &GRPCPlugin{},
 }
 
-// KV is the interface that we're exposing as a plugin.
-type KV interface {
-	Put(key string, value []byte) error
-	Get(key string) ([]byte, error)
+type IPlugin interface {
+	Init(map[string]string) error
+	Name() (string, error)
+	Version() (string, error)
+	Run() error
+	ParseOutput() (string, error)
 }
 
-// This is the implementation of plugin.Plugin so we can serve/consume this.
-type KVPlugin struct {
-	// Concrete implementation, written in Go. This is only used for plugins
-	// that are written in Go.
-	Impl KV
-}
-
-func (p *KVPlugin) Server(*plugin.MuxBroker) (interface{}, error) {
-	return &RPCServer{Impl: p.Impl}, nil
-}
-
-func (*KVPlugin) Client(b *plugin.MuxBroker, c *rpc.Client) (interface{}, error) {
-	return &RPCClient{client: c}, nil
-}
-
-// This is the implementation of plugin.GRPCPlugin so we can serve/consume this.
-type KVGRPCPlugin struct {
+type GRPCPlugin struct {
 	// GRPCPlugin must still implement the Plugin interface
 	plugin.Plugin
 	// Concrete implementation, written in Go. This is only used for plugins
 	// that are written in Go.
-	Impl KV
+	Impl IPlugin
 }
 
-func (p *KVGRPCPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) error {
-	proto.RegisterKVServer(s, &GRPCServer{Impl: p.Impl})
+func (p *GRPCPlugin) GRPCServer(broker *plugin.GRPCBroker, s *grpc.Server) error {
+	plugin_interface.RegisterPluginServer(s, &GRPCServer{Impl: p.Impl})
 	return nil
 }
 
-func (p *KVGRPCPlugin) GRPCClient(ctx context.Context, broker *plugin.GRPCBroker, c *grpc.ClientConn) (interface{}, error) {
-	return &GRPCClient{client: proto.NewKVClient(c)}, nil
+func (p *GRPCPlugin) GRPCClient(ctx context.Context, broker *plugin.GRPCBroker, c *grpc.ClientConn) (interface{}, error) {
+	return &GRPCClient{client: plugin_interface.NewPluginClient(c)}, nil
 }

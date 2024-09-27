@@ -7,7 +7,7 @@ option go_package = "github.com/StandardRunbook/plugin-interface";
 // The IPlugin service that represents your interface
 service Plugin {
   // Initializes the plugin
-  rpc Init (Empty) returns (InitResponse);
+  rpc Init (Config) returns (InitResponse);
 
   // Retrieves the name of the plugin
   rpc Name (Empty) returns (NameResponse);
@@ -20,6 +20,11 @@ service Plugin {
 
   // Parses the output of the plugin
   rpc ParseOutput (Empty) returns (ParseOutputResponse);
+}
+
+// A message representing init configuration parameters
+message Config {
+  map<string, string> parameters = 1;
 }
 
 // An empty message, used for methods that don't require input

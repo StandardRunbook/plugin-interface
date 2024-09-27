@@ -33,7 +33,7 @@ const (
 // The IPlugin service that represents your interface
 type PluginClient interface {
 	// Initializes the plugin
-	Init(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*InitResponse, error)
+	Init(ctx context.Context, in *Config, opts ...grpc.CallOption) (*InitResponse, error)
 	// Retrieves the name of the plugin
 	Name(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*NameResponse, error)
 	// Retrieves the version of the plugin
@@ -52,7 +52,7 @@ func NewPluginClient(cc grpc.ClientConnInterface) PluginClient {
 	return &pluginClient{cc}
 }
 
-func (c *pluginClient) Init(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*InitResponse, error) {
+func (c *pluginClient) Init(ctx context.Context, in *Config, opts ...grpc.CallOption) (*InitResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(InitResponse)
 	err := c.cc.Invoke(ctx, Plugin_Init_FullMethodName, in, out, cOpts...)
@@ -109,7 +109,7 @@ func (c *pluginClient) ParseOutput(ctx context.Context, in *Empty, opts ...grpc.
 // The IPlugin service that represents your interface
 type PluginServer interface {
 	// Initializes the plugin
-	Init(context.Context, *Empty) (*InitResponse, error)
+	Init(context.Context, *Config) (*InitResponse, error)
 	// Retrieves the name of the plugin
 	Name(context.Context, *Empty) (*NameResponse, error)
 	// Retrieves the version of the plugin
@@ -128,7 +128,7 @@ type PluginServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPluginServer struct{}
 
-func (UnimplementedPluginServer) Init(context.Context, *Empty) (*InitResponse, error) {
+func (UnimplementedPluginServer) Init(context.Context, *Config) (*InitResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Init not implemented")
 }
 func (UnimplementedPluginServer) Name(context.Context, *Empty) (*NameResponse, error) {
@@ -165,7 +165,7 @@ func RegisterPluginServer(s grpc.ServiceRegistrar, srv PluginServer) {
 }
 
 func _Plugin_Init_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(Config)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -177,7 +177,7 @@ func _Plugin_Init_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: Plugin_Init_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PluginServer).Init(ctx, req.(*Empty))
+		return srv.(PluginServer).Init(ctx, req.(*Config))
 	}
 	return interceptor(ctx, in, info, handler)
 }
