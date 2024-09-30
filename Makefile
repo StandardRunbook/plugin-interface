@@ -10,10 +10,10 @@ PROTOC_GEN_GO=$(shell which protoc-gen-go)
 PROTO_FILES=$(PROTO_DIR)/*.proto
 
 # Default target
-all: generate
+all: go_generate
 
 # Generate Go code from protobuf files
-generate:
+go_generate:
 	mkdir -p $(GO_OUT_DIR)
 	$(PROTOC) --go_out=$(GO_OUT_DIR) --go-grpc_out=$(GO_OUT_DIR) \
 		--proto_path=$(PROTO_DIR) $(PROTO_FILES)

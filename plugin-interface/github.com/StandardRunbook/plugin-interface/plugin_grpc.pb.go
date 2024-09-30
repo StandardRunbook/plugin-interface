@@ -8,6 +8,7 @@ package plugin_interface
 
 import (
 	context "context"
+	"github.com/StandardRunbook/plugin-interface/shared"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -153,7 +154,7 @@ type UnsafePluginServer interface {
 	mustEmbedUnimplementedPluginServer()
 }
 
-func RegisterPluginServer(s grpc.ServiceRegistrar, srv PluginServer) {
+func RegisterPluginServer(s grpc.ServiceRegistrar, srv *shared.GRPCServer) {
 	// If the following call pancis, it indicates UnimplementedPluginServer was
 	// embedded by pointer and is nil.  This will cause panics if an
 	// unimplemented method is ever invoked, so we test this at initialization

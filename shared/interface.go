@@ -15,6 +15,14 @@ var PluginMap = map[string]plugin.Plugin{
 	"plugin_grpc": &GRPCPlugin{},
 }
 
+// Handshake is a common handshake that is shared by plugin and host.
+var Handshake = plugin.HandshakeConfig{
+	// This isn't required when using VersionedPlugins
+	ProtocolVersion:  1,
+	MagicCookieKey:   "BASIC_PLUGIN",
+	MagicCookieValue: "hello",
+}
+
 type IPlugin interface {
 	Init(map[string]string) error
 	Name() (string, error)
