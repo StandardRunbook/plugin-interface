@@ -1,6 +1,6 @@
 # Paths
 PROTO_DIR=./proto
-GO_OUT_DIR=./plugin-interface
+GO_OUT_DIR=./hypothesis-interface
 
 # Tools
 PROTOC=protoc

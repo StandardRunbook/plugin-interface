@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package plugin;
+package runbook_hypothesis;
 
-option go_package = "github.com/StandardRunbook/plugin-interface";
+option go_package = "github.com/StandardRunbook/hypothesis";
 
 // The IPlugin service that represents your interface
-service Plugin {
+service Hypothesis {
   // Initializes the plugin
   rpc Init (Config) returns (InitResponse);
 
